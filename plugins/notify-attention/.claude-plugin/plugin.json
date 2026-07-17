@@ -1,0 +1,8 @@
+{
+    "name": "notify-attention",
+    "version": "1.0.0",
+    "description": "Plays an attention sound when Claude needs you (Notification hook): permission prompt, idle prompt, or input requested. Cross-platform: macOS, Windows, Linux. Opt out per user with CLAUDE_HOOK_SOUND=off.",
+    "author": {
+        "name": "Pixida"
+    }
+}
