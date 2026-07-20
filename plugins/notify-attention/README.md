@@ -18,6 +18,18 @@ different from the completion chime:
 Same design as `notify-sound`: pure Node one-liner (identical on all platforms),
 spawned detached so it never blocks Claude.
 
+The command relies only on Node, which Claude Code already requires, so the exact
+same hook works on all three platforms. It spawns the player detached and returns
+immediately, so it never blocks Claude.
+
+> ⚠️ **WSL users: install PulseAudio first, or you'll get no sound at all.**
+> This plugin runs inside the Linux side of WSL, so it uses `paplay`/`aplay`, not the
+> Windows sound system. Most WSL distros don't ship with an audio player. Install one:
+> ```bash
+> sudo apt install pulseaudio-utils   # provides paplay
+> ```
+> Without this, the hook will silently fail — no error, but just use the default sound of windows and not your configured custom sound.
+
 ## Opt out
 
 ```bash
