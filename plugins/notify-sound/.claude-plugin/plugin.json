@@ -1,6 +1,6 @@
 {
     "name": "notify-sound",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Plays a short completion sound when Claude finishes a turn (Stop hook). Cross-platform: macOS, Windows, Linux. Opt out per user with CLAUDE_HOOK_SOUND=off.",
     "author": {
         "name": "Pixida"

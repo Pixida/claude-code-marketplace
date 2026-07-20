@@ -11,13 +11,13 @@
             "name": "notify-sound",
             "source": "./plugins/notify-sound",
             "description": "Cross-platform completion sound played when Claude finishes a turn (Stop hook). Opt-in. Silence per-user with CLAUDE_HOOK_SOUND=off.",
-            "version": "1.0.0"
+            "version": "1.0.1"
         },
         {
             "name": "notify-attention",
             "source": "./plugins/notify-attention",
             "description": "Cross-platform attention sound played when Claude needs the user (Notification hook: permission, idle, input requested). Opt-in. Silence per-user with CLAUDE_HOOK_SOUND=off.",
-            "version": "1.0.0"
+            "version": "1.0.1"
         }
     ]
 }
