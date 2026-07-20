@@ -31,7 +31,7 @@ The hook checks this on every run and no-ops when set.
 This plugin is opt-in — it does nothing until enabled.
 
 ```
-/plugin marketplace add https://gitlab.pixida.com/majesticmint/marketplace.git
+/plugin marketplace add Pixida/claude-code-marketplace
 /plugin install notify-sound@pixida-marketplace
 ```
 

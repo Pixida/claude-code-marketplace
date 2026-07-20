@@ -1,8 +1,8 @@
 # pixida-marketplace
 
-Pixida's internal **Claude Code plugin marketplace**. This repo is the single,
-MR-reviewed source of truth for approved Claude Code customizations (hooks, agents,
-skills, MCP servers) across our three org environments.
+Pixida's public **Claude Code plugin marketplace**. This repo is the single,
+PR-reviewed source of truth for approved Claude Code customizations (hooks, agents,
+skills, MCP servers) across our managed org environments.
 
 ## Why this exists
 
@@ -10,7 +10,7 @@ Our managed settings lock hook/agent customization to plugins from approved
 marketplaces (`strictPluginOnlyCustomization`). That means individual users and
 cloned repos **cannot** inject their own hooks — a deliberate guard against
 repo-supplied hook RCE. Approved customizations flow through *this* marketplace
-instead, where every change goes through a merge request and review.
+instead, where every change goes through a pull request and review.
 
 ## Layout
 
@@ -41,7 +41,7 @@ Each org's `managed-settings.json` does two things:
 
    ```json
    "strictKnownMarketplaces": [
-       { "source": "hostPattern", "hostPattern": "^gitlab\\.pixida\\.com$" }
+       { "source": "github", "repo": "Pixida/claude-code-marketplace" }
    ]
    ```
 
@@ -51,8 +51,8 @@ Each org's `managed-settings.json` does two things:
    "extraKnownMarketplaces": {
        "pixida-marketplace": {
            "source": {
-               "source": "url",
-               "url": "https://gitlab.pixida.com/majesticmint/marketplace.git"
+               "source": "github",
+               "repo": "Pixida/claude-code-marketplace"
            }
        }
    }
@@ -67,13 +67,14 @@ that org's `enabledPlugins` in managed settings.
 
 ## Access / authentication
 
-Because this is a private repo, Claude Code needs to clone it. `url` sources clone
-over **SSH by default**, which uses each developer's existing GitLab SSH key — no
-token to distribute. To clone over HTTPS instead, set
-`CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` and configure a git credential helper, or use a
-read-only deploy token. Do **not** embed a token in the URL inside managed settings.
+This is a **public** GitHub repo, so no authentication is needed to clone it — no SSH
+keys, no tokens, nothing to distribute.
 
-`gitlab.pixida.com` is already in the sandbox network allowlist for all three orgs.
+GitHub domains are already in the sandbox network allowlist for **Management** and
+**Dev-Full**, so it works there out of the box. **Dev-Restricted** deliberately does
+*not* allow GitHub (its sandbox is locked to internal hosts), so this marketplace is
+**not** wired into that environment; it would be provisioned there via a local seed
+instead.
 
 ## Validate before pushing
 
