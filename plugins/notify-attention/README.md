@@ -26,6 +26,24 @@ export CLAUDE_HOOK_SOUND=off
 
 The same variable silences both `notify-attention` and `notify-sound`.
 
+## Pick your own sound
+
+Set `CLAUDE_HOOK_SOUND_ATTENTION` to the path of a sound file to override the default:
+
+```bash
+export CLAUDE_HOOK_SOUND_ATTENTION=/System/Library/Sounds/Sosumi.aiff   # macOS
+export CLAUDE_HOOK_SOUND_ATTENTION=/usr/share/sounds/freedesktop/stereo/bell.oga   # Linux
+export CLAUDE_HOOK_SOUND_ATTENTION=C:\Windows\Media\notify.wav   # Windows / WSL (Windows-side path)
+```
+
+The path is handed straight to the platform's native player (`afplay`, `paplay`/`aplay`,
+or PowerShell's `SoundPlayer`) — no shell interpolation involved, so it's safe even if
+the path contains spaces or special characters. If the path is wrong or unplayable, the
+hook fails silently (no fallback bell) rather than crashing — verify the sound plays
+once after setting it. On WSL, this must be a path reachable from the Linux side
+(`paplay`/`aplay`), since the Windows PowerShell fallback branch keeps using the
+default system sound.
+
 ## Enable
 
 ```
