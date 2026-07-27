@@ -82,9 +82,36 @@ instead.
 claude plugin validate .
 ```
 
+## Editing hook plugins (CLAUDE_PLUGIN_ROOT workaround)
+
+Plugins whose hook runs a Node script (e.g. `notify-sound`, `notify-attention`) keep
+that script readable at `scripts/<name>.js` — but it's a **reference copy only**, not
+what actually executes. `hooks.json`'s `command` embeds a minified, triple-escaped
+(JSON → shell → JS) copy of the same code, because `${CLAUDE_PLUGIN_ROOT}` — the
+documented way for a plugin to reference its own bundled files from a hook command —
+does not reliably resolve inside `hooks.json`, including for plugins installed from a
+registered marketplace (not just local/dev installs). See
+[anthropics/claude-code#9354](https://github.com/anthropics/claude-code/issues/9354).
+
+To change a hook's behavior: edit its `scripts/<name>.js`, test directly with `node
+scripts/<name>.js`, then hand-transcribe the result into the `command` string in that
+plugin's `hooks/hooks.json` and re-test end-to-end. Once `${CLAUDE_PLUGIN_ROOT}` is
+fixed upstream, every plugin's `hooks.json` can switch to `node
+"${CLAUDE_PLUGIN_ROOT}/scripts/<name>.js"` and this duplication goes away for good.
+
 ## Current plugins
 
 | Plugin | Purpose | Default |
 | ------ | ------- | ------- |
-| `notify-sound` | Cross-platform completion sound on `Stop` | Opt-in |
-| `notify-attention` | Cross-platform attention sound on `Notification` | Opt-in |
+| [`notify-sound`](plugins/notify-sound/README.md) | Cross-platform completion sound on `Stop` | Opt-in |
+| [`notify-attention`](plugins/notify-attention/README.md) | Cross-platform attention sound on `Notification` | Opt-in |
+
+See each plugin's README for setup and sound customization.
+
+### notify-sound vs notify-attention
+
+- **notify-attention** — only when Claude is blocked on you (permission prompt, idle,
+  waiting for input). Good for running Claude in the background.
+- **notify-sound** — on every completed turn. Good if you want a beat on each response.
+
+They can be installed together (different sounds) or independently.

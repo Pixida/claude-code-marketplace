@@ -33,7 +33,8 @@ Set `CLAUDE_HOOK_SOUND_STOP` to the path of a sound file to override the default
 ```bash
 export CLAUDE_HOOK_SOUND_STOP=/System/Library/Sounds/Funk.aiff   # macOS
 export CLAUDE_HOOK_SOUND_STOP=/usr/share/sounds/freedesktop/stereo/bell.oga   # Linux
-export CLAUDE_HOOK_SOUND_STOP=C:\Windows\Media\notify.wav   # Windows / WSL (Windows-side path)
+export CLAUDE_HOOK_SOUND_STOP=C:\Windows\Media\notify.wav   # Windows
+export CLAUDE_HOOK_SOUND_STOP=/mnt/c/Windows/Media/notify.wav   # WSL (same file, Linux mount path)
 ```
 The path is handed straight to the platform's native player (`afplay`, `paplay`/`aplay`,
 or PowerShell's `SoundPlayer`) — no shell interpolation involved, so it's safe even if
@@ -41,9 +42,11 @@ the path contains spaces or special characters. If the path is wrong or unplayab
 hook fails silently (no fallback bell) rather than crashing — verify the sound plays
 once after setting it.
 
-**WSL:** the path must be reachable from the Linux side and played via `paplay`/`aplay`
-(see the PulseAudio requirement above) — the Windows PowerShell branch is not used on WSL,
-so a Windows-side path like `C:\Windows\Media\notify.wav` will **not** work here.
+**WSL:** the path is played via `paplay`/`aplay` (see the PulseAudio requirement above),
+not the Windows PowerShell branch, so it must be a path those Linux tools can open — a
+raw Windows-syntax path like `C:\Windows\Media\notify.wav` will **not** work. A
+Windows-side file still works if you reference it through its WSL mount, e.g.
+`/mnt/c/Windows/Media/notify.wav`.
 
 ## Enable / disable the plugin
 This plugin is opt-in — it does nothing until enabled.
