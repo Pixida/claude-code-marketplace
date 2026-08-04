@@ -1,0 +1,8 @@
+{
+    "name": "bash-shape-guard",
+    "version": "1.0.0",
+    "description": "PreToolUse guard that blocks Bash commands using shell control-flow or $? — shapes the permission analyser can never auto-allow — and asks Claude to rewrite them. Reduces permission prompts without granting new permissions. Opt-in.",
+    "author": {
+        "name": "Pixida"
+    }
+}
