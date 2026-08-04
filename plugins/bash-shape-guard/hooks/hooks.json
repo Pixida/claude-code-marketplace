@@ -1,0 +1,17 @@
+{
+    "description": "Block un-allowable Bash command shapes (shell control-flow, $?) to cut permission prompts.",
+    "hooks": {
+        "PreToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/block-shell-loops.sh\"",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ]
+    }
+}

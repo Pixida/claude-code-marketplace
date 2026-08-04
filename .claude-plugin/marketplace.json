@@ -18,6 +18,12 @@
             "source": "./plugins/notify-attention",
             "description": "Cross-platform attention sound played when Claude needs the user (Notification hook: permission, idle, input requested). Opt-in. Silence per-user with CLAUDE_HOOK_SOUND=off.",
             "version": "1.0.2"
+        },
+        {
+            "name": "bash-shape-guard",
+            "source": "./plugins/bash-shape-guard",
+            "description": "PreToolUse guard: blocks un-allowable Bash shapes (shell control-flow, $?) to cut permission prompts. Opt-in, block-only.",
+            "version": "1.0.0"
         }
     ]
 }
