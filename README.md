@@ -95,8 +95,8 @@ that script readable at `scripts/<name>.js` — but it's a **reference copy only
 what actually executes. `hooks.json`'s `command` embeds a minified, triple-escaped
 (JSON → shell → JS) copy of the same code, because `${CLAUDE_PLUGIN_ROOT}` — the
 documented way for a plugin to reference its own bundled files from a hook command —
-does not reliably resolve inside `hooks.json`, including for plugins installed from a
-registered marketplace (not just local/dev installs). See
+did not reliably resolve for their `node "${CLAUDE_PLUGIN_ROOT}/scripts/<name>.js"`
+invocation. See
 [anthropics/claude-code#9354](https://github.com/anthropics/claude-code/issues/9354).
 
 To change a hook's behavior: edit its `scripts/<name>.js`, test directly with `node
@@ -104,6 +104,17 @@ scripts/<name>.js`, then hand-transcribe the result into the `command` string in
 plugin's `hooks/hooks.json` and re-test end-to-end. Once `${CLAUDE_PLUGIN_ROOT}` is
 fixed upstream, every plugin's `hooks.json` can switch to `node
 "${CLAUDE_PLUGIN_ROOT}/scripts/<name>.js"` and this duplication goes away for good.
+
+**This is narrower than it first looks — verify before copying the workaround.**
+`bash-shape-guard`'s `hooks.json` runs `bash "${CLAUDE_PLUGIN_ROOT}/hooks/block-shell-loops.sh"`
+directly, no inline duplication, and this was confirmed working end-to-end: installed
+from this registered marketplace into a fresh session, a real `PreToolUse` call fired,
+blocked a `for` loop, and logged to `.claude/hooks.log` — `${CLAUDE_PLUGIN_ROOT}`
+resolved correctly. So the resolution failure above is not a blanket `hooks.json`
+problem; it may be specific to the `node`/command-markdown path the linked issue
+describes. When adding a new bash-based hook, reference `${CLAUDE_PLUGIN_ROOT}`
+directly first (per `bash-shape-guard`) and only fall back to inline duplication if
+you actually reproduce a resolution failure.
 
 ## Current plugins
 
