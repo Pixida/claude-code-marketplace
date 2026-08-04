@@ -59,16 +59,29 @@ fi
 
 # Three detectors. The first two are anchored so they cannot fire on a command that merely
 # *contains* the word -- `grep -n "if x" file`, or even an unquoted `grep -rn then <file>`:
-#   1. a line STARTS with a control-flow keyword (grep -E works per line, so this also
-#      catches newline-separated loops);
-#   2. a body opener follows a `;`, `&`, `|` or start-of-line, which is the only place real
-#      shell syntax puts `do` / `then`. Requiring that separator rather than plain
-#      whitespace is what keeps `grep -rn then <file>` allowed.
+#   1. a NEW command starts with a control-flow keyword, anchored to start-of-line or a
+#      preceding `;` (grep -E works per line, so this also catches newline-separated loops);
+#   2. a body opener (`do` / `then`) follows a `;` or start-of-line.
 #   3. a literal `$?` anywhere (fixed-string match, see rationale above).
+#
+# Only `;` (and newline) are used as separators here -- NOT `&` or `|`. In real bash grammar,
+# `do`/`then` always attach directly to their header's condition-list via `;` or a newline;
+# they never follow `&` or `|`. `cmd | while read x; do ...; done` is still caught, because
+# the `; do` inside it matches independently of what precedes `while`. Including `&`/`|` in
+# the separator set bought no additional true positives but did cause false positives: an
+# ERE alternation ending in `|then ` or `|do ` inside a quoted `grep -E`/`sed` pattern (e.g.
+# `grep -E 'foo|then '`) would otherwise be misread as a real pipe into a `then`/`do` body.
+# `case`/`esac` has no `do`/`then` of its own, so detector 1 is what has to catch it; adding
+# `;` there (not just start-of-line) is what catches `echo start; case $x in ...; esac`.
+# Residual, deliberately accepted gaps: a `case` (or `for`/`if`/...) statement introduced
+# directly after a bare `&` or `|` with no keyword at line-start (e.g. `echo x | case $x in
+# ...`) still slips through, as does a quoted pattern that happens to contain a literal
+# `;then ` or `;do `. Both are rarer than the pipe-alternation case above and would need real
+# shell-quote parsing to close, which this deliberately text-only guard does not attempt.
 reason=""
-if grep -qE '^[[:space:]]*(for|while|until|if|case|select)[[:space:]]' <<<"$cmd"; then
+if grep -qE '(^|;)[[:space:]]*(for|while|until|if|case|select)[[:space:]]' <<<"$cmd"; then
     reason="starts with a shell control-flow keyword"
-elif grep -qE '(^|[;&|])[[:space:]]*(do|then)([[:space:]]|$)' <<<"$cmd"; then
+elif grep -qE '(^|;)[[:space:]]*(do|then)([[:space:]]|$)' <<<"$cmd"; then
     reason="contains a loop/conditional body"
 elif grep -qF '$?' <<<"$cmd"; then
     reason='uses $? (simple_expansion -- can never be auto-allowed)'
