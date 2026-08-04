@@ -26,6 +26,12 @@ plugins/
     .claude-plugin/plugin.json
     hooks/hooks.json
     README.md
+  bash-shape-guard/         # opt-in PreToolUse guard on Bash shape
+    .claude-plugin/plugin.json
+    hooks/hooks.json
+    hooks/block-shell-loops.sh
+    hooks/_log.sh
+    README.md
 ci/
   validate-marketplace.mjs  # offline validator run by CI
 ```
@@ -105,6 +111,7 @@ fixed upstream, every plugin's `hooks.json` can switch to `node
 | ------ | ------- | ------- |
 | [`notify-sound`](plugins/notify-sound/README.md) | Cross-platform completion sound on `Stop` | Opt-in |
 | [`notify-attention`](plugins/notify-attention/README.md) | Cross-platform attention sound on `Notification` | Opt-in |
+| [`bash-shape-guard`](plugins/bash-shape-guard/README.md) | Blocks un-allowable Bash shapes (shell control-flow, `$?`) on `PreToolUse` to cut permission prompts | Opt-in |
 
 See each plugin's README for setup and sound customization.
 
