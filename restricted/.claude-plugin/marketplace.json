@@ -1,0 +1,44 @@
+{
+    "name": "pixida-restricted",
+    "owner": {
+        "name": "Pixida"
+    },
+    "metadata": {
+        "description": "Curated subset of Pixida plugins for the Dev-Restricted (client/NDA) environment. Every plugin is pinned to a reviewed commit; adding or bumping an entry requires a pull request."
+    },
+    "plugins": [
+        {
+            "name": "notify-sound",
+            "source": {
+                "source": "git-subdir",
+                "url": "Pixida/claude-code-marketplace",
+                "path": "plugins/notify-sound",
+                "sha": "dd5427a747f4e3ddd36e0bab02075879fa99ca5b"
+            },
+            "description": "Cross-platform completion sound played when Claude finishes a turn (Stop hook). Opt-in. Silence per-user with CLAUDE_HOOK_SOUND=off.",
+            "version": "1.0.2"
+        },
+        {
+            "name": "notify-attention",
+            "source": {
+                "source": "git-subdir",
+                "url": "Pixida/claude-code-marketplace",
+                "path": "plugins/notify-attention",
+                "sha": "dd5427a747f4e3ddd36e0bab02075879fa99ca5b"
+            },
+            "description": "Cross-platform attention sound played when Claude needs the user (Notification hook: permission, idle, input requested). Opt-in. Silence per-user with CLAUDE_HOOK_SOUND=off.",
+            "version": "1.0.2"
+        },
+        {
+            "name": "bash-shape-guard",
+            "source": {
+                "source": "git-subdir",
+                "url": "Pixida/claude-code-marketplace",
+                "path": "plugins/bash-shape-guard",
+                "sha": "f63830b80b2e6ed2b217dc9547f14476f2cc10ba"
+            },
+            "description": "PreToolUse guard: blocks un-allowable Bash shapes (shell control-flow, $?) to cut permission prompts. Opt-in, block-only.",
+            "version": "1.0.0"
+        }
+    ]
+}

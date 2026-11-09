@@ -32,12 +32,16 @@ plugins/
     hooks/block-shell-loops.sh
     hooks/_log.sh
     README.md
+restricted/
+  .claude-plugin/
+    marketplace.json        # curated catalog for Dev-Restricted (pixida-restricted)
 ci/
   validate-marketplace.mjs  # offline validator run by CI
 ```
 
 Add new approved plugins under `plugins/<name>/` and register them in
-`.claude-plugin/marketplace.json`.
+`.claude-plugin/marketplace.json`. To also approve a plugin for Dev-Restricted,
+add an entry to `restricted/.claude-plugin/marketplace.json` (see below).
 
 ## How the orgs consume it
 
@@ -77,16 +81,37 @@ This is a **public** GitHub repo, so no authentication is needed to clone it —
 keys, no tokens, nothing to distribute.
 
 GitHub domains are already in the sandbox network allowlist for **Management** and
-**Dev-Full**, so it works there out of the box. **Dev-Restricted** deliberately does
-*not* allow GitHub (its sandbox is locked to internal hosts), so this marketplace is
-**not** wired into that environment; it would be provisioned there via a local seed
-instead.
+**Dev-Full**, so it works there out of the box.
+
+## Dev-Restricted (`pixida-restricted`)
+
+**Dev-Restricted** (client/NDA) does not consume the full marketplace. It registers a
+second, curated catalog from the same repo, `pixida-restricted`, via the `path` field
+of the marketplace source:
+
+```json
+{ "source": "github", "repo": "Pixida/claude-code-marketplace",
+  "path": "restricted/.claude-plugin/marketplace.json" }
+```
+
+Allowlist entries must match `repo` and `path` exactly. Entries in
+`restricted/.claude-plugin/marketplace.json` use `git-subdir` pointing at this repo
+and are pinned with a full commit `sha`, so a plugin only changes in Dev-Restricted
+when someone bumps that `sha` in a pull request. The `name` must stay different from
+`pixida-marketplace`.
+
+Whether Dev-Restricted can clone from GitHub without opening `github.com` in its
+sandbox allowlist is being tested; if not, GitHub gets added there or the catalog is
+provisioned via a local seed (`CLAUDE_CODE_PLUGIN_SEED_DIR`) instead.
 
 ## Validate before pushing
 
 ```
 claude plugin validate .
+claude plugin validate ./restricted
 ```
+
+`ci/validate-marketplace.mjs` only checks the main catalog, not `restricted/`.
 
 ## Editing hook plugins (CLAUDE_PLUGIN_ROOT workaround)
 
